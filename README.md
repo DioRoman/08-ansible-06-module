@@ -1,5 +1,7 @@
 # 08-ansible-06-module
 
+git clone https://github.com/ansible/ansible.git
+
 cd /mnt/c/Users/rlyst/Netology/08-ansible-06-module
 
 cd /mnt/c/Users/rlyst/Netology/08-ansible-06-module/ansible
@@ -19,3 +21,5 @@ ansible-playbook -i localhost, test.yml --connection=local
 ansible-galaxy collection init my_own_namespace.yandex_cloud_elk
 
 ansible-galaxy collection build
+
+ansible-playbook -i localhost, playbook.yml --connection=local

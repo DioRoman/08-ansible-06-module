@@ -1,0 +1,3 @@
+---
+path: "/tmp/testfile_from_role.txt"
+content: "Содержимое по умолчанию из роли."
