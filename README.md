@@ -23,3 +23,5 @@ ansible-galaxy collection init my_own_namespace.yandex_cloud_elk
 ansible-galaxy collection build
 
 ansible-playbook -i localhost, playbook.yml --connection=local
+
+ansible-galaxy collection init my_own_namespace.yandex_vm
