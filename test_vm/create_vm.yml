@@ -1,0 +1,10 @@
+---
+- name: Use role from collection
+  hosts: localhost
+  gather_facts: false
+
+  collections:
+    - my_own_namespace.yandex_vm
+
+  roles:
+    - create_yc_vm

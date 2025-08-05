@@ -1,64 +1,61 @@
-#!/usr/bin/python
+#!/usr/bin/python3
+
 from ansible.module_utils.basic import AnsibleModule
 import subprocess
-import json
 
-def run_yc_command(args):
-    proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = proc.communicate()
-    if proc.returncode != 0:
-        return None, err.decode()
-    return out.decode(), None
+def run_yc_command(params):
+    # Формируем команду yc CLI для создания VM
+    command = [
+        'yc', 'compute', 'instance', 'create',
+        '--name', params['vm_name'],
+        '--zone', params['zone'],
+        '--folder-id', params['folder_id'],
+        '--platform', 'standard-v1',
+        '--cores', str(params['core_count']),
+        '--memory', str(params['memory_gb']),
+        '--create-boot-disk', f"size={params['disk_size_gb']}GB,image-family={params['image_family']}",
+        '--ssh-key', params['ssh_key']
+    ]
+
+    try:
+        result = subprocess.run(command, check=True, capture_output=True, text=True)
+        return (True, result.stdout)
+    except subprocess.CalledProcessError as e:
+        return (False, e.stderr)
 
 def main():
     module_args = dict(
-        name=dict(type='str', required=True),
         folder_id=dict(type='str', required=True),
-        zone=dict(type='str', required=True),
-        platform=dict(type='str', default='standard-v1'),
-        cores=dict(type='int', default=2),
-        memory=dict(type='int', default=4),
-        disk_size=dict(type='int', default=16),
-        image_family=dict(type='str', required=True),
-        image_folder_id=dict(type='str', required=False, default=None),
-        network_id=dict(type='str', required=True),
-        subnet_id=dict(type='str', required=True),
-        service_account=dict(type='str', required=False, default=None)
+        zone=dict(type='str', required=False, default='ru-central1-a'),
+        vm_name=dict(type='str', required=True),
+        core_count=dict(type='int', required=False, default=2),
+        memory_gb=dict(type='int', required=False, default=4),
+        image_family=dict(type='str', required=False, default='ubuntu-2004-lts'),
+        disk_size_gb=dict(type='int', required=False, default=20),
+        ssh_key_path=dict(type='path', required=True)
     )
 
-    result = dict(changed=False)
+    module = AnsibleModule(
+        argument_spec=module_args,
+        supports_check_mode=False
+    )
 
-    module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
+    # Читаем содержимое SSH ключа
+    try:
+        with open(module.params['ssh_key_path'], 'r') as f:
+            ssh_key = f.read().strip()
+    except Exception as e:
+        module.fail_json(msg=f"Не удалось прочитать SSH ключ: {str(e)}")
 
-    # Формируем команду для yc cli
-    cmd = [
-        'yc', 'compute', 'instance', 'create',
-        '--name', module.params['name'],
-        '--folder-id', module.params['folder_id'],
-        '--zone', module.params['zone'],
-        '--platform', module.params['platform'],
-        '--cores', str(module.params['cores']),
-        '--memory', f"{module.params['memory']}G",
-        '--create-boot-disk', f"type=network-ssd,size={module.params['disk_size']}GB,image-family={module.params['image_family']}"
-    ]
+    params = dict(module.params)
+    params['ssh_key'] = ssh_key
 
-    if module.params['image_folder_id']:
-        cmd[-1] += f",image-folder-id={module.params['image_folder_id']}"
+    success, output = run_yc_command(params)
 
-    cmd += ['--network-interface', f"subnet-id={module.params['subnet_id']}"]
-
-    if module.params['service_account']:
-        cmd += ['--service-account-id', module.params['service_account']]
-
-    if module.check_mode:
-        module.exit_json(changed=True, meta=cmd)
-
-    out, err = run_yc_command(cmd)
-    if err:
-        module.fail_json(msg='yc create failed: ' + err)
-    result['changed'] = True
-    result['output'] = json.loads(out) if out else out
-    module.exit_json(**result)
+    if success:
+        module.exit_json(changed=True, msg="ВМ успешно создана", output=output)
+    else:
+        module.fail_json(msg="Ошибка при создании ВМ", error=output)
 
 if __name__ == '__main__':
     main()
