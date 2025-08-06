@@ -18,6 +18,8 @@ python -m ansible.modules.my_own_module payload.json
 
 ansible-playbook -i localhost, test.yml --connection=local
 
+ansible-playbook -i localhost, main.yml --connection=local
+
 
 cd /mnt/c/Users/rlyst/Netology/08-ansible-06-module/my_own_namespace/yandex_cloud_elk
 
