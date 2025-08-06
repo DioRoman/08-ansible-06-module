@@ -18,7 +18,7 @@ python -m ansible.modules.my_own_module payload.json
 
 ansible-playbook -i localhost, test.yml --connection=local
 
-ansible-playbook -i localhost, main.yml --connection=local
+ansible-playbook -i localhost, test_vm.yml --connection=local
 
 
 cd /mnt/c/Users/rlyst/Netology/08-ansible-06-module/my_own_namespace/yandex_cloud_elk
@@ -45,3 +45,7 @@ cd /mnt/c/Users/rlyst/Netology/08-ansible-06-module/test_vm/
 ansible-galaxy collection install my_own_namespace-yandex_vm-1.0.0.tar.gz --force
 
 ansible-playbook -i localhost, create_vm.yml --connection=local
+
+yc vpc network create --name my-vpc --folder-id b1g22qi1cc8rq4avqgik
+
+yc vpc subnet create --name my-subnet --network-name my-vpc --folder-id b1g22qi1cc8rq4avqgik --zone ru-central1-a --range 10.128.0.0/24
