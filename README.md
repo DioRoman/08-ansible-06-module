@@ -53,6 +53,26 @@ https://github.com/DioRoman/08-ansible-06-module/blob/main/test_vm/my_own_namesp
 
 Скриншоты
 
+**пункты 4, 6**
+
+<img width="1583" height="195" alt="Снимок экрана 2025-08-07 122602" src="https://github.com/user-attachments/assets/f58eb591-21be-4bd1-9328-044ad54911b2" />
+
+<img width="1574" height="680" alt="Снимок экрана 2025-08-07 122747" src="https://github.com/user-attachments/assets/9fd4f8c6-9e6c-44e9-bc32-db25263efc5e" />
+
+<img width="1601" height="871" alt="Снимок экрана 2025-08-07 123055" src="https://github.com/user-attachments/assets/f9057566-c8e2-49ab-931e-cff170744a6a" />
+
+**пункты 15, 16**
+
+<img width="1585" height="673" alt="Снимок экрана 2025-08-07 125626" src="https://github.com/user-attachments/assets/c8cf642d-0235-44b1-a6a9-5a3ee367f2c7" />
+
+<img width="1911" height="619" alt="Снимок экрана 2025-08-07 101937" src="https://github.com/user-attachments/assets/5045aca6-66d9-4a45-b100-3aa982c77d26" />
+
+<img width="1906" height="525" alt="Снимок экрана 2025-08-07 101943" src="https://github.com/user-attachments/assets/1f2efcf5-f223-4556-8ab8-2b7034ce6551" />
+
+<img width="1765" height="369" alt="Снимок экрана 2025-08-07 101955" src="https://github.com/user-attachments/assets/cae09a68-cc8d-4283-aab2-c3d344aa8bcd" />
+
+
+
 
 
 
