@@ -1,51 +1,38 @@
 # 08-ansible-06-module
 
-git clone https://github.com/ansible/ansible.git
+# Краткое описание модулей Ansible
 
-cd /mnt/c/Users/rlyst/Netology/08-ansible-06-module
+## 1. Модуль создания и обновления файла (`my_own_module`)
 
-cd /mnt/c/Users/rlyst/Netology/08-ansible-06-module/ansible
-python3 -m venv venv
-. venv/bin/activate
+Модуль предназначен для создания текстового файла по заданному пути с указанным содержимым. Позволяет автоматически создавать родительские директории. Если файл существует, но его содержимое отличается от переданного, модуль перезапишет файл; если содержимое совпадает — изменений не вносит (идемпотентность).
 
-pip install -r requirements.txt
-. hacking/env-setup
-deactivate
+**Основные параметры:**
+- `path` — путь к создаваемому файлу;
+- `content` — содержимое для записи в файл.
 
-. venv/bin/activate && . hacking/env-setup
+**Ключевые особенности:**
+- Создаёт файл с требуемым содержимым, либо обновляет существующий.
+- Самостоятельно создаёт директории по пути при необходимости.
+- Поддерживает режим проверки (check mode).
 
-python -m ansible.modules.my_own_module payload.json
+---
 
-ansible-playbook -i localhost, test.yml --connection=local
+## 2. Модуль создания виртуальной машины в Yandex Cloud через CLI (`create_vm`)
 
-ansible-playbook -i localhost, test_vm.yml --connection=local
+Модуль автоматизирует создание виртуальной машины (ВМ) в Yandex Cloud с помощью официальной утилиты CLI (`yc`). Проверяет, существует ли ВМ с заданным именем (работает идемпотентно) и создаёт новую только при отсутствии существующей. Поддерживается передача параметров, таких как количество CPU, объём памяти, размер диска, ID образа, зона размещения и путь к публичному SSH-ключу.
 
+**Основные параметры:**
+- `folder_id` — идентификатор папки Yandex Cloud;
+- `zone` — зона размещения;
+- `vm_name` — имя создаваемой ВМ;
+- `core_count`, `memory_gb`, `disk_size_gb` — ресурсы ВМ;
+- `image_id` — ID образа диска;
+- `ssh_key_path` — путь к публичному SSH-ключу.
 
-cd /mnt/c/Users/rlyst/Netology/08-ansible-06-module/my_own_namespace/yandex_cloud_elk
+**Ключевые особенности:**
+- Полная идемпотентность (ВМ с тем же именем не пересоздаётся).
+- Проверка наличия SSH-ключа и прав на создание ресурсов.
+- Перед использованием требует существующих VPC и Подсети (VPC и Subnets).
+- Не изменяет существующую ВМ.
 
-ansible-galaxy collection init my_own_namespace.yandex_cloud_elk
-
-ansible-galaxy collection build
-
-cd /mnt/c/Users/rlyst/Netology/08-ansible-06-module/Test
-
-ansible-galaxy collection install my_own_namespace-yandex_cloud_elk-1.0.0.tar.gz --force
-
-ansible-playbook -i localhost, playbook.yml --connection=local
-
-ansible-galaxy collection init my_own_namespace.yandex_vm
-
-
-cd /mnt/c/Users/rlyst/Netology/08-ansible-06-module/my_own_namespace/yandex_vm
-
-ansible-galaxy collection build
-
-cd /mnt/c/Users/rlyst/Netology/08-ansible-06-module/test_vm/
-
-ansible-galaxy collection install my_own_namespace-yandex_vm-1.0.0.tar.gz --force
-
-ansible-playbook -i localhost, create_vm.yml --connection=local
-
-yc vpc network create --name my-vpc --folder-id b1g22qi1cc8rq4avqgik
-
-yc vpc subnet create --name my-subnet --network-name my-vpc --folder-id b1g22qi1cc8rq4avqgik --zone ru-central1-a --range 10.128.0.0/24
+---

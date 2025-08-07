@@ -1,31 +1,57 @@
-# Collections Plugins Directory
+# Модуль Ansible для создания ВМ в Yandex Cloud через CLI
 
-This directory can be used to ship various plugins inside an Ansible collection. Each plugin is placed in a folder that
-is named after the type of plugin it is in. It can also include the `module_utils` and `modules` directory that
-would contain module utils and modules respectively.
+**Версия:** 1.0.0  
+**Автор:** Roman Lystsev  
+**Лицензия:** MIT
 
-Here is an example directory of the majority of plugins currently supported by Ansible:
+## Описание
 
-```
-└── plugins
-    ├── action
-    ├── become
-    ├── cache
-    ├── callback
-    ├── cliconf
-    ├── connection
-    ├── filter
-    ├── httpapi
-    ├── inventory
-    ├── lookup
-    ├── module_utils
-    ├── modules
-    ├── netconf
-    ├── shell
-    ├── strategy
-    ├── terminal
-    ├── test
-    └── vars
-```
+Ansible-модуль предназначен для **создания виртуальной машины (ВМ) в Yandex Cloud** с помощью CLI (`yc compute instance create`). Модуль проверяет, существует ли ВМ с заданным именем (идемпотентность), и создаёт её только если она отсутствует. Позволяет настраивать основные параметры новой ВМ: имя, зону, ресурсы, загрузочный образ, размер диска и путь к SSH-ключу.
 
-A full list of plugin types can be found at [Working With Plugins](https://docs.ansible.com/ansible-core/2.16/plugins/plugins.html).
+## Аргументы
+
+| Параметр      | Описание                                           | Тип    | Обязателен | Значение по умолчанию |
+|---------------|----------------------------------------------------|--------|------------|----------------------|
+| folder_id     | Идентификатор папки, в которой создаётся ВМ        | str    | да         | —                    |
+| zone          | Зона размещения ВМ                                 | str    | нет        | ru-central1-a        |
+| vm_name       | Имя виртуальной машины                             | str    | да         | —                    |
+| core_count    | Количество vCPU                                    | int    | нет        | 2                    |
+| memory_gb     | Объём памяти (ГБ)                                  | int    | нет        | 4                    |
+| image_id      | ID образа (image-id) для загрузочного диска        | str    | да         | —                    |
+| disk_size_gb  | Размер загрузочного диска (ГБ)                     | int    | нет        | 20                   |
+| ssh_key_path  | Путь к публичному SSH-ключу                        | path   | да         | —                    |
+
+## Пример использования
+
+name: Создать ВМ в Yandex Cloud
+my_namespace.my_collection.yc_vm_create:
+folder_id: "b1gvmob95yys****"
+zone: "ru-central1-a"
+vm_name: "test-vm"
+core_count: 2
+memory_gb: 4
+image_id: "fd8etj844cv1jee6c9lb"
+disk_size_gb: 40
+ssh_key_path: "/home/ansible/.ssh/id_rsa.pub"
+
+## Возвращаемые значения
+
+| Значение  | Описание                                              | Тип   | Всегда возвращается |
+|-----------|-------------------------------------------------------|-------|---------------------|
+| changed   | Было ли внесено изменение (создана новая ВМ)          | bool  | да                  |
+| msg       | Краткое сообщение о результате                        | str   | да                  |
+| output    | Вывод yc CLI при успешном создании                    | str   | да (при success)    |
+| error     | Сообщение об ошибке yc CLI                            | str   | да (при fail)       |
+
+## Особенности
+
+- Модуль не изменяет существующую ВМ — если ВМ с таким именем существует, выполнение будет идемпотентным (changed=False).
+- Путь к SSH-ключу должен быть валидным и доступным для чтения.
+- При ошибках CLI (yc) возвращается подробное сообщение об ошибке.
+- Позволяет создавать только прерываемые (preemptible) ВМ (можно убрать/раскрыть опцию при необходимости).
+- Не поддерживает check mode.
+
+---
+
+> Для корректной работы требуется предварительно установить и настроить Yandex Cloud CLI.  
+> Подробнее о доступных параметрах команды `yc compute instance create` — в официальной документации Yandex Cloud[3][7].

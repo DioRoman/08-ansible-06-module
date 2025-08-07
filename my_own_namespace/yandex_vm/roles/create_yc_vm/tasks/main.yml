@@ -6,7 +6,7 @@
     vm_name: "{{ vm_name }}"
     core_count: "{{ core_count }}"
     memory_gb: "{{ memory_gb }}"
-    image_family: "{{ image_family }}"
+    image_id: "{{ image_id }}"
     disk_size_gb: "{{ disk_size_gb }}"
     ssh_key_path: "{{ ssh_key_path }}"
   register: result
