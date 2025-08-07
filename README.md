@@ -36,3 +36,23 @@
 - Не изменяет существующую ВМ.
 
 ---
+
+## Ссылки и скриншоты.
+
+**Collection**
+
+https://github.com/DioRoman/08-ansible-06-module/tree/main/my_own_namespace/yandex_cloud_elk
+
+https://github.com/DioRoman/08-ansible-06-module/tree/main/my_own_namespace/yandex_vm
+
+**tar.gz архив**
+
+https://github.com/DioRoman/08-ansible-06-module/blob/main/test_own_module/my_own_namespace-yandex_cloud_elk-1.0.0.tar.gz
+
+https://github.com/DioRoman/08-ansible-06-module/blob/main/test_vm/my_own_namespace-yandex_vm-1.0.0.tar.gz
+
+Скриншоты
+
+
+
+
