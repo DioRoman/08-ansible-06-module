@@ -24,7 +24,7 @@ Ansible-модуль предназначен для **создания вирт
 | ssh_key_path  | Путь к публичному SSH-ключу                        | path   | да         | —                    |
 
 ## Пример использования
-
+```
 name: Создать ВМ в Yandex Cloud
 my_namespace.my_collection.yc_vm_create:
 folder_id: "b1gvmob95yys****"
@@ -35,7 +35,7 @@ memory_gb: 4
 image_id: "fd8etj844cv1jee6c9lb"
 disk_size_gb: 40
 ssh_key_path: "/home/ansible/.ssh/id_rsa.pub"
-
+```
 ## Возвращаемые значения
 
 | Значение  | Описание                                              | Тип   | Всегда возвращается |
